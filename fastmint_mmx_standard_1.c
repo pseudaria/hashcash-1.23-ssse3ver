@@ -4,7 +4,7 @@
 #include <setjmp.h>
 #include "libfastmint.h"
 
-#if (defined(__i386__) || defined(__AMD64__)) && defined(__GNUC__) && defined(__MMX__)
+#if (defined(__i386__) || defined(__amd64__)) && defined(__GNUC__) && defined(__MMX__)
 typedef int mmx_d_t __attribute__ ((vector_size (8)));
 typedef int mmx_q_t __attribute__ ((vector_size (8)));
 #endif
@@ -12,7 +12,7 @@ typedef int mmx_q_t __attribute__ ((vector_size (8)));
 int minter_mmx_standard_1_test( void ) {
   /* This minter runs only on x86 and AMD64 hardware supporting MMX - and will only compile on GCC */
 #if !defined( COMPACT )
-#if (defined(__i386__) || defined(__AMD64__)) && defined(__GNUC__) && defined(__MMX__)
+#if (defined(__i386__) || defined(__amd64__)) && defined(__GNUC__) && defined(__MMX__)
     return (gProcessorSupportFlags & HC_CPU_SUPPORTS_MMX) != 0;
 #endif
 #else  
@@ -29,7 +29,7 @@ int minter_mmx_standard_1_test( void ) {
 #define OR(a,b) ( (mmx_d_t) __builtin_ia32_por( (mmx_q_t) a, (mmx_q_t) b) )
 #define ADD(a,b) ( __builtin_ia32_paddd(a,b) )
 
-#if (defined(__i386__) || defined(__AMD64__)) && defined(__GNUC__) && defined(__MMX__)
+#if (defined(__i386__) || defined(__amd64__)) && defined(__GNUC__) && defined(__MMX__)
 static inline mmx_d_t S(int n, mmx_d_t X)
 {
   mmx_d_t G = {} ;
@@ -290,7 +290,7 @@ static inline mmx_d_t S(int n, mmx_d_t X)
 unsigned long minter_mmx_standard_1(int bits, int* best, unsigned char *block, const uInt32 IV[5], int tailIndex, unsigned long maxIter, MINTER_CALLBACK_ARGS)
 {
 #if !defined( COMPACT )
-#if (defined(__i386__) || defined(__AMD64__)) && defined(__GNUC__) && defined(__MMX__)
+#if (defined(__i386__) || defined(__amd64__)) && defined(__GNUC__) && defined(__MMX__)
   MINTER_CALLBACK_VARS;
   unsigned long iters = 0 ;
   int n = 0, t = 0, gotBits = 0, maxBits = (bits > 16) ? 16 : bits;

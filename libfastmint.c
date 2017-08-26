@@ -134,7 +134,7 @@ static void hashcash_detect_features( void ) {
     } else {
 	gProcessorSupportFlags &= ~(HC_CPU_SUPPORTS_MMX);
     }
-#elif defined(__AMD64__)
+#elif defined(__amd64__)
     gProcessorSupportFlags = HC_CPU_SUPPORTS_MMX;
 #else
     gProcessorSupportFlags = 0;

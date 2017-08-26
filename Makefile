@@ -25,6 +25,8 @@ COPT_MINGW = -O3 -funroll-loops -march=pentium-mmx -mmmx \
 COPT_G3_OSX = -O3 -funroll-loops -fno-inline -mcpu=750 -faltivec
 COPT_PPC_LINUX = -O3 -funroll-loops -fno-inline -mcpu=604e -maltivec \
 	-mabi=altivec
+COPT_ATHLON64 = -O3 -funroll-loops -march=athlon64 -mmmx \
+	-D_REENTRANT -D_THREAD_SAFE -fPIC
 LIB=.a
 # request static link of -lcrypto only
 LIBCRYPTO=/usr/lib/libcrypto.a
@@ -53,10 +55,11 @@ default:	help generic
 
 help:
 	@echo "make <platform> where platform is:"
-	@echo "    x86, mingw, mingw-dll, g3-osx, ppc-linux, gnu, generic, debug"
+	@echo "    x86, mingw, mingw-dll, g3-osx, ppc-linux, gnu, "
+	@echo "    generic, athlon64, debug"
 	@echo "or to link with openSSL for SHA1 rather than builtin:"
 	@echo "    x86-openssl, g3-osx-openssl, ppc-linux-openssl, "
-	@echo "    gnu-openssl, generic-openssl, debug-openssl"
+	@echo "    gnu-openssl, generic-openssl, athlon64-openssl, debug-openssl"
 	@echo "other make targets are docs, install, clean, distclean, docclean"
 	@echo ""
 	@echo "(doing make generic by default)"
@@ -79,6 +82,9 @@ g3-osx:
 
 ppc-linux:
 	$(MAKE) "CFLAGS=$(CFLAGS) $(REGEXP) $(COPT_PPC_LINUX) $(COPT)" build
+
+athlon64: 
+	$(MAKE) "CFLAGS=$(CFLAGS) $(REGEXP) $(COPT_ATHLON64) $(COPT)" build
 
 # mingw windows targets (cross compiler, or native)
 
@@ -105,6 +111,9 @@ gnu-openssl:
 
 generic-openssl:
 	$(MAKE) generic "CFLAGS=$(CFLAGS) -DOPENSSL" "LDFLAGS=$(LDFLAGS) $(LIBCRYPTO)"
+
+athlon64-openssl:
+	$(MAKE) athlon64 "CFLAGS=$(CFLAGS) -DOPENSSL" "LDFLAGS=$(LDFLAGS) $(LIBCRYPTO)"
 
 debug-openssl:
 	$(MAKE) debug "CFLAGS=$(CFLAGS) -DOPENSSL" "LDFLAGS=$(LDFLAGS) $(LIBCRYPTO)"
