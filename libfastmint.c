@@ -109,7 +109,9 @@ static void hashcash_detect_features( void ) {
     }
 #elif defined(__i386__) && defined(__GNUC__)
     void *oldhandler;
+    void *oldhandler_ssse3;
     int hasMMX = 0;
+    int hasSSSE3 = 0;
 	
     gIllegalInstructionTrapped = 0;
     oldhandler = signal(SIGILL, sig_ill_handler);
@@ -134,8 +136,34 @@ static void hashcash_detect_features( void ) {
     } else {
 	gProcessorSupportFlags &= ~(HC_CPU_SUPPORTS_MMX);
     }
+    
+    gIllegalInstructionTrapped = 0;
+    oldhandler_ssse3 = signal(SIGILL, sig_ill_handler);
+    
+    if ( !setjmp(gEnv) ) {
+	asm volatile (
+	    "movl $1, %%eax\n\t"
+	    "push %%ebx\n\t"
+	    "cpuid\n\t"
+	    "andl $0x200, %%ecx\n\t"
+	    "pop %%ebx\n\t"
+	    : "=d" (hasSSSE3)
+	    : /* no input */
+	    : "eax", "edx"
+	    );
+    }
+    
+    signal(SIGILL, oldhandler_ssse3);
+	
+    if ( hasSSSE3 && !gIllegalInstructionTrapped ) {
+	gProcessorSupportFlags |= HC_CPU_SUPPORTS_SSSE3;
+    } else {
+	gProcessorSupportFlags &= ~(HC_CPU_SUPPORTS_SSSE3);
+    }    
 #elif defined(__amd64__)
+    //ForDebug
     gProcessorSupportFlags = HC_CPU_SUPPORTS_MMX;
+    gProcessorSupportFlags |= HC_CPU_SUPPORTS_SSSE3;
 #else
     gProcessorSupportFlags = 0;
 #endif
@@ -174,6 +202,8 @@ void hashcash_select_minter() {
 	minter_altivec_standard_2,
 	minter_mmx_compact_1,
 	minter_mmx_standard_1,
+	minter_ssse3_standard_1,
+	minter_ssse3_standard_2,
 	NULL };
     static const HC_Mint_Capable_Routine tests[] = {
 	minter_library_test,
@@ -187,6 +217,8 @@ void hashcash_select_minter() {
 	minter_altivec_standard_2_test,
 	minter_mmx_compact_1_test,
 	minter_mmx_standard_1_test,
+	minter_ssse3_standard_1_test,
+	minter_ssse3_standard_2_test,
 	NULL };
     static const char *names[] = {
 #if defined( OPENSSL )
@@ -204,6 +236,8 @@ void hashcash_select_minter() {
 	"PowerPC Altivec Standard 2x4-pipe",
 	"AMD64/x86 MMX Compact 1x2-pipe",
 	"AMD64/x86 MMX Standard 1x2-pipe",
+	"AMD64/x86 SSSE3 Standard 1x4-pipe(Altivec -> SSSE3)",
+	"AMD64/x86 SSSE3 Standard 2x4-pipe(Altivec -> SSSE3)",
 	NULL };
     int i = 0 ;
 	

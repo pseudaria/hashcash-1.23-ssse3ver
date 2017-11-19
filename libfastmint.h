@@ -88,6 +88,7 @@ typedef struct {
 
 #define HC_CPU_SUPPORTS_ALTIVEC 0x01
 #define HC_CPU_SUPPORTS_MMX 0x02
+#define HC_CPU_SUPPORTS_SSSE3 0x04
 extern int gProcessorSupportFlags;
 
 extern const char *encodeAlphabets[];
@@ -186,7 +187,6 @@ extern int minter_altivec_compact_2_test(void);
  * Athlon, Athlon64, Opteron, and compatible systems.  Hand-optimised.
  */
 extern unsigned long minter_mmx_standard_1(int bits, int* best, unsigned char *block, const uInt32 IV[5], int tailIndex, unsigned long maxIter, MINTER_CALLBACK_ARGS);
-
 extern int minter_mmx_standard_1_test(void);
 
 /* AMD64/x86 MMX 1x2-pipe "compact" implementation - for use on Pentium-MMX/2/3/4, K6-2/3,
@@ -194,6 +194,16 @@ extern int minter_mmx_standard_1_test(void);
  */
 extern unsigned long minter_mmx_compact_1(int bits, int* best, unsigned char *block, const uInt32 IV[5], int tailIndex, unsigned long maxIter, MINTER_CALLBACK_ARGS);
 extern int minter_mmx_compact_1_test(void);
+
+/* SSSE3 Altivec->SSSE3 4x1 Pipes.
+ */
+extern unsigned long minter_ssse3_standard_1(int bits, int* best, unsigned char *block, const uInt32 IV[5], int tailIndex, unsigned long maxIter, MINTER_CALLBACK_ARGS);
+extern int minter_ssse3_standard_1_test(void);
+
+/* SSSE3 Altivec->SSSE3 4x2 Pipes.
+ */
+extern unsigned long minter_ssse3_standard_2(int bits, int* best, unsigned char *block, const uInt32 IV[5], int tailIndex, unsigned long maxIter, MINTER_CALLBACK_ARGS);
+extern int minter_ssse3_standard_2_test(void);
 
 /* use SHA1 library (integrated or openSSL depending on how compiled) */
 

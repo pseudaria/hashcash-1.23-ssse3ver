@@ -2,5 +2,13 @@ See hashcash man page, and http://www.hashcash.org for information.
 
 There is a hashcash FAQ and mailing-list on the web page if you have
 questions.
+--------------------------------------------------------------------
 
-If you use a AMD cpu, you can use a 'make athlon64' option.
+This version of hashcash has a SSSE3 MINTER.
+X86_64 INTEL CPU => you can use a 'make x86_64_intel' option.
+X86_64 AMD CPU   => 'make amd'
+WINDOWS&INTEL    => 'make mingw'
+WINDOWS&AMD      => 'make mingw_amd'
+
+Please feel free to ask me any questions about SSSE3 MINTER.
+E-MAIL:pseudaria@gmail.com
